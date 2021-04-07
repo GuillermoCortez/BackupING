@@ -1,0 +1,24 @@
+deff('y = f(x,n)','y = x^n/factorial(n)')
+deff('y = error_f(v_ac, v_an)','y = ((v_ac - v_an) / v_ac) * 100')
+
+error_s = 0.05
+error_a = 0
+x = 0.5
+valor_ac = x + 1
+valor_ant = 0
+n_max = 10
+for iter=2:n_max 
+    valor_ant = valor_ac
+    valor_ac = valor_ac + f(x,iter)
+    error_a = error_f(valor_ac, valor_ant)
+    if error_a <= error_s
+        disp('Solucion encontrada:')
+        disp('n: ' + string(iter))
+        disp('valor aprox.: ' + string(valor_ac))
+        disp('Error % aprox.: ' + string(error_a))
+        break
+    end
+        disp('n actual: ' + string(iter))
+        disp('valor aprox. actual: ' + string(valor_ac))
+        disp('Error % aprox.: ' + string(error_a) +' %')
+end

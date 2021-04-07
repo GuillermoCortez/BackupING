@@ -1,0 +1,82 @@
+// (A): Error absoluto menor a 1x10^-4
+// (B): Error relativo (fraccional) menor a 0.01
+// (C): Error relativo porcentual menor a 0.1%
+//*************************************************************************
+
+
+
+// Definimos la funcion de aproximacción
+deff('Y_siguiente=f(X,Y_actual)','Y_siguiente=(X+Y_actual^2)/(2*Y_actual)')
+// Definimos el valor del que se quiere sacar la Raíz Cuadrada
+X = 3
+// Definimos el valor aproximado inicial
+Y_aprox_actual = 2
+//Variable que define cuanto dura el bucle en el que se calcula el error
+fin = %F
+
+//Esta función recibe una opción por parámetros que corresponde a una de las tres opciones de ejercicios, y calcula lo que está definido en cada uno.
+function error=calc_error(option)
+    i = 0
+    select option
+        case 'a'
+
+            disp('Calculando un error absoluto menor a 1x10^-4...')
+
+            while fin == %F,
+
+                Y_aprox_siguiente = f(X,Y_aprox_actual)
+                error_aprox = Y_aprox_siguiente - Y_aprox_actual
+                i = i+1
+
+                disp('Error absoluto aproximado: ' + string(error_aprox)+ '. Iteración : ' + string(i))
+
+                if abs(error_aprox) < (1*10^-4)     //Error definido para el punto a
+                    fin = %T
+                    disp('Iteraciones realizadas para obtener un error absoluto menor a 1x10^-4: ' + string(i))
+                    disp('Error absoluto aproximado: ' + string(error_aprox))
+                    break
+                end 
+                Y_aprox_actual = Y_aprox_siguiente
+            end
+        case 'b'
+
+        disp('Calculando un error relativo (fraccional) menor a 0.01...')
+
+            while fin == %F,
+                
+                Y_aprox_siguiente = f(X,Y_aprox_actual)
+                error_relativo_aprox = abs((Y_aprox_siguiente - Y_aprox_actual) / Y_aprox_siguiente)
+                i = i+1
+
+                disp('Error relativo aproximado: ' + string(error_relativo_aprox)+ '. Iteración : ' + string(i))
+
+                if error_relativo_aprox < 0.01      //Error definido para el punto b
+                    fin = %T
+                    disp('Iteraciones realizadas para obtener un error relativo (fraccional) menor a 0.01: ' + string(i))
+                    disp('Error relativo: ' + string(error_relativo_aprox))
+                    break
+                end
+                Y_aprox_actual = Y_aprox_siguiente
+            end
+        case 'c'
+
+            disp('Calculando un error relativo porcentual menor a 0.1%...')
+
+            while fin == %F,
+
+                Y_aprox_siguiente = f(X,Y_aprox_actual)
+                error_aprox_porcentual = abs(((Y_aprox_siguiente - Y_aprox_actual) / Y_aprox_siguiente) * 100)
+                i = i+1
+
+                disp('Error aproximado %: ' + string(error_aprox_porcentual)+ '%. Iteración : ' + string(i))
+
+                if error_aprox_porcentual < 0.1    //Error definido para el punto c
+                    fin = %T
+                    disp('Iteraciones realizadas para obtener un error relativo porcentual menor a 0.1%: ' + string(i))
+                    disp('Error relativo porcentual: ' + string(error_aprox_porcentual) + '%')
+                    break
+                end
+                Y_aprox_actual = Y_aprox_siguiente
+            end
+    end
+endfunction
