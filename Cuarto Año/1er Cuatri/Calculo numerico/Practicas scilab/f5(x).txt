@@ -1,0 +1,65 @@
+clear
+clc
+function y=f5(x)
+    N = 10
+    [nx,mx]=size(x)
+    Nx=nx*mx
+    y = []
+    
+       
+    for i=(1:Nx)
+        xi=x(i)
+        disp(xi) 
+        S = 0
+        if xi > 1 then
+            for n=(1:N)
+                S = S - 1/xi^n
+            end
+        else
+            S = -10
+        end
+        disp(S)
+        y = [y,S]
+    end
+    y = -(y+2)
+endfunction
+// IMPLEMENTACIÓN DEL MÉTODO DE LA FALSA POSICIÓN PARA LA RESOLUCIÓN DE UNA ECUACIÓN DE UNA VARIABLE
+// Siguiendo Ejemplo 5.1 de Chapman
+
+
+
+// Criterios de parada
+tol = 0.00001 // tolerancia del error relativo
+Nmax = 20 // Máximo número de iteraciones
+
+//deff('y = f(c)', 'y = (667.38/c)*(1-exp(-0.146843*c))-40')
+deff('y = f(c)', 'y = c^3-c+3')
+//deff('y = f(c)', 'y = -3/2+1/2*c+1/(c^2+0.5)')
+
+
+x0=1
+x1=2
+
+xn=[x0, x1]
+fn=[f(x0)]
+
+for iter=1:Nmax,
+
+    fn=[fn, f5(xn($))]
+    
+    x_nuevo = xn($)-fn($)*(xn($-1)-xn($))/(fn($-1)-fn($)) // Actualizacion del Metodo de la Secante
+
+//    plot(xn,fn, 'ro')    
+
+    xn = [xn, x_nuevo]
+
+    er = abs((xn($-1)-xn($))/xn($))
+    
+    disp('iteración '+string(iter)+': X_aprox ='+string(xn($))+'; er ='+string(er))
+    if er <= tol then
+        disp('La solución de la ecuación f(x)=0 es x='+string(xn($)))
+        disp('Y el error relativo aproximado es er='+string(er))
+        break
+    end
+end
+plot(xn,'ro-.')

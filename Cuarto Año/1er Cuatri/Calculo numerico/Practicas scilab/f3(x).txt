@@ -1,0 +1,73 @@
+// Función 3: Función con varias raices en el intervalo de interés
+
+//function y=f3(x)
+//    y = (x-1).*(x-2.5).^2.*(x-4.5)
+//endfunction
+clear
+clc
+
+// Criterios de parada
+tol = 0.0001 // tolerancia del error relativo
+Nmax = 100 // Máximo número de iteraciones
+//Para aproximar la primera posible raiz
+deff('y = f(x)', 'y = (x-1).*(x-2.5).^2.*(x-4.5)')
+
+xi=0.5
+xs=2
+
+if(f(xi)*f(xs)>0) then
+    disp('¡¡f(xi) y f(xs) tienen el mismo signo!!')
+    disp('Por favor, introduzca nuevos valores para xi e xs')
+    break
+else
+    for iter=1:Nmax,
+        xr = (xi+xs)/2
+        er = (xs-xi)/(2*xr)
+        disp('iteración '+string(iter)+': X_medio ='+string(xr)+'; er ='+string(er))
+        if er <= tol then
+            disp('La solución de la ecuación f(x)=0 es x='+string(xr))
+            disp('Y el error relativo aproximado es er='+string(er))
+            break
+        else
+            if (f(xi)*f(xr)<0) then
+                xs=xr
+            else
+                xi=xr
+            end
+        end
+    end
+end
+
+//clear
+//clc
+
+// Criterios de parada
+tol = 0.0001 // tolerancia del error relativo
+Nmax = 20 // Máximo número de iteraciones
+
+deff('y = f(x)', 'y = (x-1).*(x-2.5).^2.*(x-4.5)')
+
+deff('y = df(x)', 'y = (32*x.^3 - 252*x.^2 + 612*x - 455)/8')
+
+
+
+x0=2.5
+
+xn=[x0]
+fn=[]
+dfn=[]
+
+for iter=1:Nmax,
+    fn=[fn,f(xn($))]
+    dfn=[dfn, df(xn($))]
+    xn = [xn, xn($)-fn($)/dfn($)]
+    er = abs((xn($-1)-xn($))/xn($))
+    disp('iteración '+string(iter)+': X_aprox ='+string(xn($))+'; er ='+string(er))
+    if er <= tol then
+        disp('La solución de la ecuación f(x)=0 es x='+string(xn($)))
+        disp('Y el error relativo aproximado es er='+string(er))
+        break
+    end
+end
+plot(xn,'ro-.')
+

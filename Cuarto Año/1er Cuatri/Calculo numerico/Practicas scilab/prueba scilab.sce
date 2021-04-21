@@ -1,0 +1,42 @@
+// IMPLEMENTACIÓN DEL MÉTODO DE BISECCIÓN PARA LA RESOLUCIÓN DE UNA ECUACIÓN DE UNA VARIABLE
+// Siguiendo Ejemplo 5.1 de Chapman
+
+clear
+clc
+
+t=10
+m=68.1
+v=40
+g=9.8
+
+// Criterios de parada
+tol = 0.01 // tolerancia del error relativo
+Nmax = 100 // Máximo número de iteraciones
+
+deff('y = f(c)', 'y = c^2+c-3.92')
+
+xi=1
+xs=2
+
+if(f(xi)*f(xs)>0) then
+    disp('¡¡f(xi) y f(xs) tienen el mismo signo!!')
+    disp('Por favor, introduzca nuevos valores para xi e xs')
+    break
+else
+    for iter=1:Nmax,
+        xr = (xi+xs)/2
+        er = (xs-xi)/(2*xr)
+        disp('iteración '+string(iter)+': X_medio ='+string(xr)+'; er ='+string(er))
+        if er <= tol then
+            disp('La solución de la ecuación f(x)=0 es x='+string(xr))
+            disp('Y el error relativo aproximado es er='+string(er))
+            break
+        else
+            if (f(xi)*f(xr)<0) then
+                xs=xr
+            else
+                xi=xr
+            end
+        end
+    end
+end

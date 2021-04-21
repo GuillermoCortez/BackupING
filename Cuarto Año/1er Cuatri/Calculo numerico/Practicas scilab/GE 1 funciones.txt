@@ -1,0 +1,83 @@
+// Casos de distintos tipos de funciones, y que métodos son más convenientee
+
+// Función 1: Función con Raíz Simple en el intervalo de interés [0,5]
+
+function y=f1(x)
+    y = -(x-5).^2+0.5*x+1
+endfunction
+
+// Función 2: Función con Raíz Doble en el intervalo de interés
+
+function y=f2(x)
+    y = -(x-2.5).^2+0.5*x-1.25
+endfunction
+
+
+// Función 3: Función con varias raices en el intervalo de interés
+
+function y=f3(x)
+    y = (x-1).*(x-2.5).^2.*(x-4.5)
+endfunction
+
+
+
+// Función 4: Función con ráices imaginarias
+
+function y=f4(x)
+    y = (x-%pi).^2+x
+endfunction
+
+// Función 5: Función definida en forma iterativa con raíz en simple en el intervalo
+
+function y=f5(x)
+    N = 10
+    [nx,mx]=size(x)
+    Nx=nx*mx
+    y = []
+    
+       
+    for i=(1:Nx)
+        xi=x(i)
+        disp(xi) 
+        S = 0
+        if xi > 1 then
+            for n=(1:N)
+                S = S - 1/xi^n
+            end
+        else
+            S = -10
+        end
+        disp(S)
+        y = [y,S]
+    end
+    y = -(y+2)
+endfunction
+
+//  Suponemos que el intervalo de interés es igual en todos los casos [0,5]
+x=linspace(0.5,5,100)
+
+subplot(2,3,1)
+plot(x,f1(x))
+xgrid
+xtitle("f1(x)","","")
+
+subplot(2,3,2)
+plot(x,f2(x))
+xgrid
+xtitle("f2(x)","","")
+
+subplot(2,3,3)
+plot(x,f3(x))
+xgrid
+xtitle("f3(x)","","")
+
+
+subplot(2,3,4)
+plot(x,f4(x))
+xgrid
+xtitle("f4(x)","","")
+
+subplot(2,3,5)
+plot(x,f5(x))
+xgrid
+xtitle("f5(x)","","")

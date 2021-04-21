@@ -1,0 +1,38 @@
+// Función 2: Función con Raíz Doble en el intervalo de interés
+
+function y=f2(x)
+    y = -(x-2.5).^2+0.5*x-1.25
+endfunction
+
+clear
+clc
+
+// Criterios de parada
+tol = 0.001 // tolerancia del error relativo
+Nmax = 20 // Máximo número de iteraciones
+
+deff('y = f(x)', 'y = -(x-2.5).^2+0.5*x-1.25')
+
+deff('y = df(x)', 'y = -((4*x-11)/2)')
+
+
+
+x0=2
+
+xn=[x0]
+fn=[]
+dfn=[]
+
+for iter=1:Nmax,
+    fn=[fn,f(xn($))]
+    dfn=[dfn, df(xn($))]
+    xn = [xn, xn($)-fn($)/dfn($)]
+    er = abs((xn($-1)-xn($))/xn($))
+    disp('iteración '+string(iter)+': X_aprox ='+string(xn($))+'; er ='+string(er))
+    if er <= tol then
+        disp('La solución de la ecuación f(x)=0 es x='+string(xn($)))
+        disp('Y el error relativo aproximado es er='+string(er))
+        break
+    end
+end
+plot(xn,'ro-.')
