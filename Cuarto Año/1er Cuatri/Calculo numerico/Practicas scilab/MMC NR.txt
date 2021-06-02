@@ -1,0 +1,95 @@
+clear
+clc
+
+C=[0.5 0.8 1.5 2.5 4.0]
+K=[1.1 2.4 5.3 7.6 8.9]
+//K=[1.6   2.28   3.42   4.44   5.33]
+
+plot(C,K,'ro')
+
+
+// Definición del la función que devuelve el valor aproximado de k en función de un cierto valor de c, tomando os parametros k_max y c_s
+deff('k_i_aprox = modelo_NL(c_i,k_max,c_s)','k_i_aprox = (k_max*c_i)./(c_s+c_i)')
+
+// Definición de la función que calcula el error de predicción cuadratico para un cierto punto (c_i,k_i), en función de los parametros k_max y c_s
+deff('y = EC_i(k_i,c_i,k_max,c_s)','y = (k_i-(k_max*c_i)/(c_s+c_i))^2')
+
+// Definición de las formulas que calculan los terminos de la sumatoria de las funciones f1 y f2
+deff('y = termino_f1_i(k_i,c_i,k_max,c_s)','y = -(2*c_i*(k_i-(c_i*k_max)/(c_s+c_i)))/(c_s+c_i)')
+deff('y = termino_f2_i(k_i,c_i,k_max,c_s)','y = (2*c_i*k_max*(k_i-(c_i*k_max)/(c_s+c_i)))/(c_s+c_i)^2')
+
+// Definición de las formulas que calculan los terminos de la sumatoria de los elementos del Jacobiano
+deff('y = termino_J11_i(k_i,c_i,k_max,c_s)', 'y = (2*c_i^2)/(c_s+c_i)^2')
+deff('y = termino_J12_i(k_i,c_i,k_max,c_s)', 'y = (2*c_i*(k_i-(c_i*k_max)/(c_s+c_i)))/(c_s+c_i)^2-(2*c_i^2*k_max)/(c_s+c_i)^3')
+deff('y = termino_J21_i(k_i,c_i,k_max,c_s)', 'y = (2*c_i*(k_i-(c_i*k_max)/(c_s+c_i)))/(c_s+c_i)^2-(2*c_i^2*k_max)/(c_s+c_i)^3')
+deff('y = termino_J22_i(k_i,c_i,k_max,c_s)', 'y = (2*c_i^2*k_max^2)/(c_s+c_i)^4-(4*c_i*k_max*(k_i-(c_i*k_max)/(c_s+c_i)))/(c_s+c_i)^3')
+
+// Función que calcula las Sumatorias de los distintos terminos y devuelve el valor de la Suma de Errores Cuadraticos
+function S = SEC(K,C,X)
+    k_max = X(1)
+    c_s = X(2)
+    S = 0
+    [n,m] =size(K)
+    for i=1:n*m
+        S=S + termino_f1_i(K(i),C(i),k_max,c_s)
+    end
+endfunction
+
+// Función que calcula las Sumatorias de los distintos terminos y devuelve el vector F
+function V = F(K,C,X)
+    k_max = X(1)
+    c_s = X(2)
+    
+    V=[0; 0]
+    [n,m] =size(K)
+    for i=1:n*m
+        V(1)=V(1) + termino_f1_i(K(i),C(i),k_max,c_s)
+        V(2)=V(2) + termino_f2_i(K(i),C(i),k_max,c_s)
+    end
+//    disp(V)
+endfunction
+
+// Función que calcula las Sumatorias de los distintos terminos y devuelve el jacobiano J
+function M = J(K,C,X)
+    k_max = X(1)
+    c_s = X(2)
+    
+    M=[0, 0; 0, 0]
+    [n,m] =size(K)
+    for i=1:n*m
+        M(1,1)=M(1,1) + termino_J11_i(K(i),C(i),k_max,c_s)
+        M(1,2)=M(1,2) + termino_J12_i(K(i),C(i),k_max,c_s)
+        M(2,1)=M(2,1) + termino_J21_i(K(i),C(i),k_max,c_s)
+        M(2,2)=M(2,2) + termino_J22_i(K(i),C(i),k_max,c_s)
+    end
+//    disp(M)
+endfunction
+
+// Valor Inicial
+X=[15;1]
+
+
+// Método de Newton-Raphson (modificado)
+norma_error_absoluto_max = 0.0000001
+N_max = 1000
+n=0
+norma_error_abs = 1
+alpha = 0.01
+
+while (n<N_max) && (norma_error_abs > norma_error_absoluto_max) do
+    n=n+1
+    disp('***********************')
+    X=X-alpha*inv(J(K,C,X))*F(K,C,X)
+    
+    norma_error_abs = sqrt(sum(F(K,C,X).^2))
+    
+    disp(X)
+    disp(norma_error_abs)
+    plot(C,modelo_NL(C,X(1),X(2)),'g--')
+    plot(C,K,'ro')
+    
+end
+disp(n)
+
+plot(C,modelo_NL(C,X(1),X(2)),'b')
+disp(SEC(K,C,X))
