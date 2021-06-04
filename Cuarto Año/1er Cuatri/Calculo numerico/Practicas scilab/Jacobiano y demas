@@ -1,0 +1,12 @@
+// f1 = X1^2-1 = 0
+// f2 = X1+X2-1 = 0
+
+
+
+X = [2;5]
+
+deff('Y=F(X)', 'Y= [X(1)^2-1 ; X(1) + X(2)-1]')
+
+deff('R =JF(X)','R = [2*X(1),0;1,1]')   //Jacobiano calculo para las funciones
+
+X= X - inv(JF(X))* F(X)

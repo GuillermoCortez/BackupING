@@ -1,0 +1,44 @@
+clear
+clc
+
+function y=f1(x)
+    y = -(x-5).^2+0.5*x+1
+endfunction
+
+
+xFunc = 2.6:0.1:3.2
+yFunc = f1(xFunc)
+plot(xFunc,yFunc)
+
+
+
+// Criterios de parada
+tol = 0.01 // tolerancia del error relativo porcentual
+Nmax = 100 // Máximo número de iteraciones
+//Para aproximar la primera posible raiz
+
+xi=3
+xs=4
+
+if(f1(xi)*f1(xs)>0) then
+    disp('¡¡f(xi) y f(xs) tienen el mismo signo!!')
+    disp('Por favor, introduzca nuevos valores para xi e xs')
+    break
+else
+    for iter=1:Nmax,
+        xr = (xi+xs)/2
+        er = abs((xs-xi)/(2*xr))*100
+        disp('iteración '+string(iter)+': X_medio ='+string(xr)+'; er ='+string(er))
+        if er <= tol then
+            disp('La solución de la ecuación f(x)=0 es x='+string(xr))
+            disp('Y el error relativo porcentual es er='+string(er))
+            break
+        else
+            if (f1(xi)*f1(xr)<0) then
+                xs=xr
+            else
+                xi=xr
+            end
+        end
+    end
+end
